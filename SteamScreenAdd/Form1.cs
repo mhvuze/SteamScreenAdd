@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿// TODO: Maybe add progress indicator during conversion
+// TODO: Maybe add numeric filters for UserID and GameID boxes
+// TODO: Maybe add more specific length limit to UserID and GameID boxes
+
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 
 namespace SteamScreenAdd
 {
@@ -36,7 +35,7 @@ namespace SteamScreenAdd
                 using (RegistryKey SteamDirKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam")) { SteamDir = (string)SteamDirKey.GetValue("SteamPath"); }
 
                 // Try to fetch user ID automatically
-                string UserDir = SteamDir + @"/userdata/";
+                string UserDir = SteamDir + "/userdata/";
                 List<string> subfolders = new List<string>(Directory.EnumerateDirectories(UserDir));
                 if (subfolders.Count > 1 || subfolders.Count < 1) { MessageBox.Show("Could not determine User ID automatically, please enter it in the text box yourself.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); } else { UserID = subfolders[0].Substring(subfolders[0].LastIndexOf("/") + 1); }
 
@@ -107,13 +106,47 @@ namespace SteamScreenAdd
             {
                 File.Copy(image, TargetDir + "/" + Date + Counter + ".jpg");
 
-                // TODO: Create thumbnails
+                // Create matching thumbnail
                 Bitmap bitmap;
                 using (Stream StreamBitmap = File.Open(image, FileMode.Open))
                 {
                     Image StreamImage = Image.FromStream(StreamBitmap);
                     bitmap = new Bitmap(StreamImage);
-                    ImageHandler.Save(bitmap, 300, 600, 90, TargetDir + "/thumbnails/" + Date + Counter + ".jpg");
+                    ImageHandler.Save(bitmap, 300, 300, 90, TargetDir + "/thumbnails/" + Date + Counter + ".jpg");
+                }
+
+                Counter++;
+                FileCounter++;
+            }
+
+            // Process png files
+            foreach (string image in Directory.EnumerateFiles(SourceDir, "*.png", SearchOption.TopDirectoryOnly))
+            {
+                // Convert large image to jpg & create thumbnail
+                Bitmap bitmap;
+                using (Stream StreamBitmap = File.Open(image, FileMode.Open))
+                {
+                    Image StreamImage = Image.FromStream(StreamBitmap);
+                    bitmap = new Bitmap(StreamImage);
+                    ImageHandler.SaveSameSize(bitmap, 95, TargetDir + "/" + Date + Counter + ".jpg");
+                    ImageHandler.Save(bitmap, 300, 300, 90, TargetDir + "/thumbnails/" + Date + Counter + ".jpg");
+                }
+
+                Counter++;
+                FileCounter++;
+            }
+
+            // Process bmp files
+            foreach (string image in Directory.EnumerateFiles(SourceDir, "*.bmp", SearchOption.TopDirectoryOnly))
+            {
+                // Convert large image to jpg & create thumbnail
+                Bitmap bitmap;
+                using (Stream StreamBitmap = File.Open(image, FileMode.Open))
+                {
+                    Image StreamImage = Image.FromStream(StreamBitmap);
+                    bitmap = new Bitmap(StreamImage);
+                    ImageHandler.SaveSameSize(bitmap, 95, TargetDir + "/" + Date + Counter + ".jpg");
+                    ImageHandler.Save(bitmap, 300, 300, 90, TargetDir + "/thumbnails/" + Date + Counter + ".jpg");
                 }
 
                 Counter++;

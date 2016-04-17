@@ -124,8 +124,6 @@
 
         #endregion
 
-        // TODO: Maybe add numeric filters for UserID and GameID boxes
-        // TODO: Maybe add more specific length limit to UserID and GameID boxes
         private System.Windows.Forms.Label labelUserID;
         private System.Windows.Forms.TextBox textBoxUserID;
         private System.Windows.Forms.Label labelGameID;
