@@ -99,7 +99,6 @@ namespace SteamScreenAdd
             // Setup file names
             string Date = DateTime.Now.ToString("yyyyMMddHHmmss") + "_";
             int Counter = 1;
-            int FileCounter = 0;
 
             // Process jpg files
             foreach (string image in Directory.EnumerateFiles(SourceDir, "*.jpg", SearchOption.TopDirectoryOnly))
@@ -116,7 +115,6 @@ namespace SteamScreenAdd
                 }
 
                 Counter++;
-                FileCounter++;
             }
 
             // Process png files
@@ -133,7 +131,6 @@ namespace SteamScreenAdd
                 }
 
                 Counter++;
-                FileCounter++;
             }
 
             // Process bmp files
@@ -150,10 +147,9 @@ namespace SteamScreenAdd
                 }
 
                 Counter++;
-                FileCounter++;
             }
 
-            MessageBox.Show("Added " + FileCounter + " images to the Steam target directory.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Added " + (Counter - 1) + " images to the Steam target directory.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
